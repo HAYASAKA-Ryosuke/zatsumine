@@ -14,7 +14,7 @@ export const isBombCell = (row: number, col: number) => {
   return cellsArray[row][col] === BOMB_VALUE;
 };
 
-export const init = (level: LevelKey) => {
+export const init = (level: LevelKey, excludeRow: number | undefined, excludeCol: number | undefined) => {
   const { bombs, row, col } = Levels[level];
   selectLevel = level;
   const newCells = Array.from({ length: row }, () => Array(col).fill(0));
@@ -26,7 +26,7 @@ export const init = (level: LevelKey) => {
     do {
       bombRow = randomInt(row);
       bombCol = randomInt(col);
-    } while (newCells[bombRow][bombCol] === BOMB_VALUE);
+    } while (newCells[bombRow][bombCol] === BOMB_VALUE || (bombRow === excludeRow && bombCol === excludeCol));
     newCells[bombRow][bombCol] = BOMB_VALUE;
   }
 
@@ -88,7 +88,7 @@ export const clickBlock = (row: number, col: number) => {
   let historyArray = get(history);
 
   if (historyArray.every(row => row.every(col => col === false))) {
-    init(selectLevel);
+    init(selectLevel, row, col);
   }
 
   let cellsArray = get(cells);

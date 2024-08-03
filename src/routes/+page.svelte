@@ -1,6 +1,6 @@
 <script lang="ts">
   import { checkCollectBombs, cells, clickBlock, history, flags, init } from '../lib/game';
-  import { BLOCK, EMPTY, BOMB, FLAG, EMPTY_VALUE, BOMB_VALUE } from '../lib/constants';
+  import { Levels, BLOCK, EMPTY, BOMB, FLAG, EMPTY_VALUE, BOMB_VALUE } from '../lib/constants';
   import { get } from 'svelte/store';
 
   let gameOver = false;
@@ -28,6 +28,7 @@
       alert('You win!');
     }
   };
+  $: flagCount = selectedLevel ? Levels[selectedLevel].bombs - $flags.flat().filter(flag => flag).length : 0;
 </script>
 
 <select bind:value={selectedLevel}>
@@ -37,6 +38,8 @@
   <option value="alien">Alien</option>
 </select>
 <button on:click={startGame}>Start</button>
+<p> flags: { flagCount } </p>
+
 <table>
   {#each $cells as tr, row}
     <tr>
@@ -48,7 +51,7 @@
         {:else if td === BOMB_VALUE && $history[row][col]}
           <td>{BOMB}</td>
         {:else if $flags[row][col]}
-          <td>{FLAG}</td>
+          <td on:contextmenu={(e) => handleRightClick(e, row, col)}>{FLAG}</td>
         {:else if td === 0 && $history[row][col]}
           <td>{EMPTY}</td>
         {:else if $history[row][col]}
