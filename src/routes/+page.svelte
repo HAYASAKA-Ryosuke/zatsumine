@@ -38,7 +38,7 @@
   <option value="alien">Alien</option>
 </select>
 <button on:click={startGame}>Start</button>
-<p> flags: { flagCount } </p>
+<p> 旗 残数: { flagCount } </p>
 
 <table>
   {#each $cells as tr, row}
